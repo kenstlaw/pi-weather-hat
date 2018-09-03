@@ -33,6 +33,9 @@ def sendData(Metric,Value):
    print(Message.rstrip())
    sock.close() 
 
+PostData = {'TempF': float(), 'DP': float() , 'Humid': float() , 'Pres': float() , 'CPU': float() }
+Counter = 0
+
 Location = 'home'
 WaitTime = 5
 PostCounter = 0
@@ -47,7 +50,6 @@ while True:
    humidity = sense.get_humidity()
    DP = Rtemp - ((100 - humidity)/5)
    pressure = sense.get_pressure()
-   #temp_calibrated = temp - ((cpu_temp - temp)/5.466)
    Atemp = temp -((t_cpu - temp)/5.466)
    DewPointF = get_F(DP)
    CPUF = get_F(t_cpu)
@@ -55,33 +57,37 @@ while True:
    Output = int(RtempF)
    Output = str(Output)
    sense.show_message(Output)
+
+   PostData['TempF'] = PostData['TempF'] + RtempF
+   PostData['DP'] = PostData['DP'] + DewPointF
+   PostData['Humid'] = PostData['Humid'] + humidity
+   PostData['Pres'] = PostData['Pres'] + pressure
+   PostData['CPU'] = PostData['CPU'] + CPUF
+   Counter = Counter + 1
    
    print(PostCounter)
    if not  ( PostCounter % 60 ):
-      sendData('Temperature',RtempF)
-      sendData('DewPoint',DewPointF)
-      sendData('Humidity',humidity)
-      sendData('Pressure',pressure)
-      sendData('CPU_Temp',CPUF)
+      avgTemp = PostData['TempF']/Counter
+      sendData('Temperature', avgTemp )
+      avgDewPointF = PostData['DP']/Counter
+      sendData('DewPoint', avgDewPointF )
+      avgHumidity = PostData['Humid']/Counter
+      sendData('Humidity', avgHumidity)
+      avgPressure = PostData['Pres']/Counter
+      sendData('Pressure', avgPressure )
+      avgCpu = PostData['CPU']/Counter
+      sendData('CPU_Temp', avgCpu)
+   
       PostCounter = 0
+      Counter = 0
+      PostData['TempF'] = 0 
+      PostData['DP']   = 0
+      PostData['Humid'] = 0 
+      PostData['Pres'] = 0
+      PostData['CPU'] = 0 
 
    print("==============================")
    time.sleep(WaitTime)
    PostCounter = PostCounter + WaitTime
 
-"""
-AtempF = get_F(Atemp)
-print("pressure  :", round(pressure))
-print("humidity  :", round(humidity))
-print("ptemp C   :", round(ptemp))
-print("htemp C   :", round(htemp))
-print("temp  C   :", round(temp))
-print("Rtemp C   :", round(Rtemp))
-print("Rtemp F   :", round(RtempF))
-print("Avg temp C:", round(temp))
-print("Temp  F   :", round(Ftemp))
-print("Temp2 F   :", round(AtempF))
-print("DewP  F   :", round(DewPointF))
-print("CPU temp C:", round(t_cpu))
-"""
 
