@@ -3,7 +3,7 @@ import os
 import sys
 import socket 
 import time
-import datetime
+import datetime as dt
 import time
 from sense_hat import SenseHat
 
@@ -35,11 +35,14 @@ def sendData(Metric,Value):
 
 PostData = {'TempF': float(), 'DP': float() , 'Humid': float() , 'Pres': float() , 'CPU': float() }
 Counter = 0
-
 Location = 'home'
 WaitTime = 5
 PostCounter = 0
+StartHour = 7
+StopHour = 22
+
 while True:
+   CurrentHour = dt.datetime.today().hour
    t_cpu = get_cpu_temp()
    ptemp = sense.get_temperature_from_pressure()
    htemp = sense.get_temperature()
@@ -54,9 +57,11 @@ while True:
    DewPointF = get_F(DP)
    CPUF = get_F(t_cpu)
    
-   Output = int(RtempF)
-   Output = str(Output)
-   sense.show_message(Output)
+   if ((CurrentHour > StartHour ) & ( CurrentHour < StopHour )):
+      print("Displaying Tempature")
+      Output = int(RtempF)
+      Output = str(Output)
+      sense.show_message(Output)
 
    PostData['TempF'] = PostData['TempF'] + RtempF
    PostData['DP'] = PostData['DP'] + DewPointF
