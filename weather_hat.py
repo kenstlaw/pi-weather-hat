@@ -78,12 +78,12 @@ while True:
       Output = str(Output)
       sense.show_message(Output)
 
-      PostData['TempF'] = PostData['TempF'] + RtempF
-      PostData['DP'] = PostData['DP'] + DewPointF
-      PostData['Humid'] = PostData['Humid'] + humidity
-      PostData['Pres'] = PostData['Pres'] + pressure
-      PostData['CPU'] = PostData['CPU'] + CPUF
-      Counter = Counter + 1
+   PostData['TempF'] = PostData['TempF'] + RtempF
+   PostData['DP'] = PostData['DP'] + DewPointF
+   PostData['Humid'] = PostData['Humid'] + humidity
+   PostData['Pres'] = PostData['Pres'] + pressure
+   PostData['CPU'] = PostData['CPU'] + CPUF
+   Counter = Counter + 1
 
    print(PostCounter)
    if not (PostCounter % 60):
