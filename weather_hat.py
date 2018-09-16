@@ -5,11 +5,15 @@ import time
 import datetime as dt
 from sense_hat import SenseHat
 import configparser
+import argparse
 
-
+options = argparse.ArgumentParser()
+options.add_argument('-f', action='store',dest='ConfigFile', type=str, help="specify a config file")
+results = options.parse_args()
+print(results.ConfigFile)
 parser = configparser.ConfigParser()
 parser.sections()
-parser.read('weather_hat.ini')
+parser.read(results.ConfigFile)
 
 MetricPrefix = parser.get('DEFAULT', 'metric_prefix')
 CarbonHost = parser.get('DEFAULT', 'carbon_host')
